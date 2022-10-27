@@ -8,3 +8,8 @@ export default interface IUsers extends IUserLogin {
   username: string;
   role: string;
 }
+
+export interface ITokenPayload {
+  id: number;
+  username: string;
+}
