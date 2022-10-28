@@ -1,4 +1,7 @@
 import * as express from 'express';
+import cors = require('cors');
+import router from './routes/index.routes';
+import ErrorHandler from './middlewares/errorMiddleware';
 
 class App {
   public app: express.Express;
@@ -22,6 +25,10 @@ class App {
 
     this.app.use(express.json());
     this.app.use(accessControl);
+
+    this.app.use(cors());
+    this.app.use('/', router);
+    this.app.use(ErrorHandler.Response);
   }
 
   public start(PORT: string | number):void {
