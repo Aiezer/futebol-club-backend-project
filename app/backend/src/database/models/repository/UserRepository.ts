@@ -1,5 +1,4 @@
 import IUser, { IUserLogin } from '../entities/interfaces/IUser';
-// import { encryptPassword, Jwt } from '../../../utils';
 import Users from '../entities/Users';
 
 export default class UserRepository {
