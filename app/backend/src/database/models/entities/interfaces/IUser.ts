@@ -3,13 +3,13 @@ export interface IUserLogin {
   password: string;
 }
 
-export default interface IUsers extends IUserLogin {
+export default interface IUser extends IUserLogin {
   id?: number;
   username: string;
   role: string;
 }
 
 export interface ITokenPayload {
-  id: number;
+  id?: number;
   username: string;
 }
