@@ -1,5 +1,5 @@
 import { INTEGER, Model, STRING } from 'sequelize';
-import db from '../index';
+import db from '..';
 
 class Users extends Model {
   id!: number;
