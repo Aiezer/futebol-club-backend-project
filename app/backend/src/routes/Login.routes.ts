@@ -13,6 +13,6 @@ loginRouter.post(
   userController.login,
 );
 
-loginRouter.get('/validate', TokenHandler.checkToken);
+loginRouter.get('/validate', TokenHandler.getTokenData);
 
 export default loginRouter;
