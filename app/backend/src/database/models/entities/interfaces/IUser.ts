@@ -12,4 +12,5 @@ export default interface IUser extends IUserLogin {
 export interface ITokenPayload {
   id?: number;
   username: string;
+  role:string;
 }

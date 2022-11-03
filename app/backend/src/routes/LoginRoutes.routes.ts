@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import TokenHandler from '../middlewares/validateToken';
 import UserService from '../database/models/services/UserService';
 import UserController from '../controllers/userController';
 
@@ -11,5 +12,7 @@ loginRouter.post(
   '/',
   userController.login,
 );
+
+loginRouter.get('/validate', TokenHandler.checkToken);
 
 export default loginRouter;

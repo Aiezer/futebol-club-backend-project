@@ -22,10 +22,10 @@ export default class UserService {
       throw new Error(message[0]);
     }
 
-    const { id, username, password } = user;
+    const { id, username, role, password } = user;
     encryptPassword.checkPassword(login.password, password);
 
-    const token = Jwt.createToken({ id, username });
+    const token = Jwt.createToken({ id, username, role });
     return token;
   };
 }
