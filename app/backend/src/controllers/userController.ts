@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import UserService from '../database/models/services/UserService';
+import { UserService } from '../database/models/services';
 import { IUserLogin } from '../database/models/entities/interfaces/IUser';
 
 export default class UserController {
