@@ -5,7 +5,7 @@ import chaiHttp = require('chai-http');
 
 import { app } from '../app';
 
-import Teams from '../database/models/Teams';
+import Teams from '../database/models/entities/Teams';
 
 chai.use(chaiHttp);
 
