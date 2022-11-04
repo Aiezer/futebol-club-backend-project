@@ -18,7 +18,7 @@ export default class MatchesService {
 
     if (homeTeam === awayTeam) {
       throw new Error(
-        '401|It is not possible to create a match with two equal teams',
+        '422|It is not possible to create a match with two equal teams',
       );
     }
 
