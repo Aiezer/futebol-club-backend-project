@@ -19,4 +19,9 @@ matchesRouter.post(
   matchesController.createAMatch,
 );
 
+matchesRouter.patch(
+  '/:id/finish',
+  matchesController.finishAMatch,
+);
+
 export default matchesRouter;
