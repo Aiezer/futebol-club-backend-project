@@ -6,21 +6,16 @@ export default class MatchesController {
     this.matchesService = matchesService;
   }
 
-  getAll = async (req: Request, res: Response, next:NextFunction) => {
-    try {
-      const { inProgress } = req.query;
+  getAll = async (req: Request, res: Response) => {
+    const { inProgress } = req.query;
 
-      if (inProgress) {
-        const result = await this.matchesService.getAllMatchesInProgress(inProgress as string);
-        return res.status(200).json(result);
-      }
-
-      const result = await this.matchesService.getAllMatches();
+    if (inProgress) {
+      const result = await this.matchesService.getAllMatchesInProgress(inProgress as string);
       return res.status(200).json(result);
-    } catch (error) {
-      console.error(error);
-      next(error);
     }
+
+    const result = await this.matchesService.getAllMatches();
+    return res.status(200).json(result);
   };
 
   createAMatch = async (req: Request, res: Response, next:NextFunction) => {
@@ -33,26 +28,16 @@ export default class MatchesController {
     }
   };
 
-  finishAMatch = async (req: Request, res: Response, next:NextFunction) => {
-    try {
-      const { id } = req.params;
-      await this.matchesService.finishAMatch(id);
-      return res.status(200).json({ message: 'Finished' });
-    } catch (error) {
-      console.error(error);
-      next(error);
-    }
+  finishAMatch = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    await this.matchesService.finishAMatch(id);
+    return res.status(200).json({ message: 'Finished' });
   };
 
-  updateAMatch = async (req: Request, res: Response, next:NextFunction) => {
-    try {
-      const { id } = req.params;
-      await this.matchesService.updateAMatch(id, req.body);
+  updateAMatch = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    await this.matchesService.updateAMatch(id, req.body);
 
-      return res.status(200).json({ message: 'Match updated' });
-    } catch (error) {
-      console.error(error);
-      next(error);
-    }
+    return res.status(200).json({ message: 'Match updated' });
   };
 }
