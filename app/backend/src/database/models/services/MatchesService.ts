@@ -17,11 +17,17 @@ export default class MatchesService {
     const { homeTeam, awayTeam } = newMatchRequest;
 
     if (homeTeam === awayTeam) {
-      throw new Error('401|It is not possible to create a match with two equal teams');
+      throw new Error(
+        '401|It is not possible to create a match with two equal teams',
+      );
     }
 
-    const checkHomeTeam = await this.teamsRepository.getById(homeTeam as unknown as string);
-    const checkAwayTeam = await this.teamsRepository.getById(awayTeam as unknown as string);
+    const checkHomeTeam = await this.teamsRepository.getById(
+      homeTeam as unknown as string,
+    );
+    const checkAwayTeam = await this.teamsRepository.getById(
+      awayTeam as unknown as string,
+    );
 
     if (!checkHomeTeam || !checkAwayTeam) {
       throw new Error('404|There is no team with such id!');
@@ -29,4 +35,7 @@ export default class MatchesService {
 
     return this.matchesRepository.createAMatch(newMatchRequest);
   };
+
+  finishAMatch = async (id: string): Promise<void> =>
+    this.matchesRepository.finishAMatch(id);
 }
