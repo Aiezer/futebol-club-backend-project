@@ -25,4 +25,13 @@ export default class MatchesRepository {
 
     return matches as IMatch[];
   };
+
+  createAMatch = async (newMatchRequest: IMatch) => {
+    const newMatche = await Matches.create({
+      ...newMatchRequest,
+      inProgress: true,
+    });
+
+    return newMatche;
+  };
 }
