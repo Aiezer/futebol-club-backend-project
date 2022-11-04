@@ -1,5 +1,5 @@
 import ITeam from '../entities/interfaces/ITeam';
-import TeamsRepository from '../repository/TeamsRepository';
+import { TeamsRepository } from '../repository';
 
 export default class TeamsService {
   constructor(private teamsRepository = new TeamsRepository()) {}
