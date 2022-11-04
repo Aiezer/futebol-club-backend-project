@@ -1,4 +1,4 @@
-import { IMatch } from '../entities/interfaces/IMatch';
+import { IMatch, IMatchUp } from '../entities/interfaces/IMatch';
 import Matches from '../entities/Matches';
 import Teams from '../entities/Teams';
 
@@ -38,6 +38,15 @@ export default class MatchesRepository {
   finishAMatch = async (id: string): Promise<void> => {
     await Matches.update(
       { inProgress: false },
+      { where: { id } },
+    );
+  };
+
+  updateAMatch = async (id: string, matchUpdate: IMatchUp): Promise<void> => {
+    const { homeTeamGoals, awayTeamGoals } = matchUpdate;
+
+    await Matches.update(
+      { homeTeamGoals, awayTeamGoals },
       { where: { id } },
     );
   };
