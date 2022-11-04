@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { MatchesService } from '../database/models/services';
 
 export default class MatchesController {
@@ -6,7 +6,7 @@ export default class MatchesController {
     this.matchesService = matchesService;
   }
 
-  getAll = async (req: Request, res: Response) => {
+  getAll = async (req: Request, res: Response, next:NextFunction) => {
     try {
       const { inProgress } = req.query;
 
@@ -19,6 +19,17 @@ export default class MatchesController {
       return res.status(200).json(result);
     } catch (error) {
       console.error(error);
+      next(error);
+    }
+  };
+
+  createAMatch = async (req: Request, res: Response, next:NextFunction) => {
+    try {
+      const result = await this.matchesService.createAMatch(req.body);
+      return res.status(201).json(result);
+    } catch (error) {
+      console.error(error);
+      next(error);
     }
   };
 }
