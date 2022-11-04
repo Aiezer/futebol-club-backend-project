@@ -1,4 +1,5 @@
 import TeamsService from './TeamsService';
 import UserService from './UserService';
+import MatchesService from './MatchesService';
 
-export { TeamsService, UserService };
+export { TeamsService, UserService, MatchesService };
