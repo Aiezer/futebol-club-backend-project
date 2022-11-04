@@ -13,4 +13,16 @@ export default class MatchesRepository {
 
     return matches as IMatch[];
   };
+
+  getAllInProgress = async (query: string): Promise<IMatch[]> => {
+    const matches = await Matches.findAll({
+      where: { inProgress: JSON.parse(query) },
+      include: [
+        { model: Teams, as: 'teamHome', attributes: ['teamName'] },
+        { model: Teams, as: 'teamAway', attributes: ['teamName'] },
+      ],
+    });
+
+    return matches as IMatch[];
+  };
 }
