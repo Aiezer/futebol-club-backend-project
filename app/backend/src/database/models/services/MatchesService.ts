@@ -1,4 +1,4 @@
-import { IMatch } from '../entities/interfaces/IMatch';
+import { IMatch, IMatchUp } from '../entities/interfaces/IMatch';
 import { MatchesRepository, TeamsRepository } from '../repository';
 
 export default class MatchesService {
@@ -38,4 +38,7 @@ export default class MatchesService {
 
   finishAMatch = async (id: string): Promise<void> =>
     this.matchesRepository.finishAMatch(id);
+
+  updateAMatch = async (id: string, matchUpdate: IMatchUp): Promise<void> =>
+    this.matchesRepository.updateAMatch(id, matchUpdate);
 }
