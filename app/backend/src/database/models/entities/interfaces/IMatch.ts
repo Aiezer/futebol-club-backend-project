@@ -10,7 +10,15 @@ export interface IMatchUp extends IMatch{
   awayTeamGoals: number,
 }
 
-export interface IMatchInfo extends Matches {
-  teamHome: { teamName: string },
-  teamAway: { teamName: string },
+export interface IMatchResults {
+  totalVictories: number
+  totalLosses: number
+  totalDraws: number
+  totalGames: number
+}
+
+export interface IGoals {
+  goalsFavor: number
+  goalsOwn: number
+  goalsBalance: number
 }
