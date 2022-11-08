@@ -50,4 +50,11 @@ export default class MatchesRepository {
       { where: { id } },
     );
   };
+
+  getAllFinished = async () => {
+    const matches = await Matches.findAll({
+      where: { inProgress: 'false' },
+    });
+    return matches;
+  };
 }

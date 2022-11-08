@@ -3,10 +3,10 @@ import ITeam from '../database/models/entities/interfaces/ITeam';
 import { IGoals, IMatch, IMatchResults } from '../database/models/entities/interfaces/IMatch';
 
 export default class LeaderboardHelper {
-  static generateLeaderboard = (team: ITeam, matches: IMatch[]): ILeaderboard => {
+  static generateLeaderboard = (team: ITeam, matches: IMatch[], inHome: boolean): ILeaderboard => {
     const { teamName } = team;
-    const allGoals: IGoals = this.getGoals(matches);
-    const matchResults: IMatchResults = this.getFinalMatchResults(matches);
+    const allGoals: IGoals = this.getGoals(matches, inHome);
+    const matchResults: IMatchResults = this.getFinalMatchResults(matches, inHome);
     const totalPoints: number = this.handleTotalPoints(matchResults);
     const efficiency: number = this.handleTeamEfficiency(totalPoints, matchResults);
     return {
@@ -18,16 +18,21 @@ export default class LeaderboardHelper {
     };
   };
 
-  private static getGoals = (matches: IMatch[]): IGoals => {
+  private static getGoals = (matches: IMatch[], inHome: boolean): IGoals => {
     const homeTeamGoals = matches.map((match:IMatch) => match.homeTeamGoals);
     const awayTeamGoals = matches.map((match:IMatch) => match.awayTeamGoals);
-    const goalsFavor = homeTeamGoals.reduce((acc: number, goals: number) => acc + goals);
-    const goalsOwn = awayTeamGoals.reduce((acc: number, goals: number) => acc + goals);
+    const goalsFavor = inHome
+      ? homeTeamGoals.reduce((acc: number, goals: number) => acc + goals)
+      : awayTeamGoals.reduce((acc: number, goals: number) => acc + goals);
+
+    const goalsOwn = inHome
+      ? awayTeamGoals.reduce((acc: number, goals: number) => acc + goals)
+      : homeTeamGoals.reduce((acc: number, goals: number) => acc + goals);
     const goalsBalance = goalsFavor - goalsOwn;
     return { goalsFavor, goalsOwn, goalsBalance };
   };
 
-  private static getFinalMatchResults = (matches: IMatch[]): IMatchResults => {
+  private static getFinalMatchResults = (matches: IMatch[], inHome: boolean): IMatchResults => {
     let totalVictories = 0;
     let totalLosses = 0;
     let totalDraws = 0;
@@ -35,8 +40,15 @@ export default class LeaderboardHelper {
 
     matches.forEach((match) => {
       const { homeTeamGoals, awayTeamGoals } = match;
-      if (homeTeamGoals > awayTeamGoals) totalVictories += 1;
-      else if (homeTeamGoals < awayTeamGoals) totalLosses += 1;
+
+      if (inHome) {
+        if (homeTeamGoals > awayTeamGoals) totalVictories += 1;
+        else if (homeTeamGoals < awayTeamGoals) totalLosses += 1;
+        else totalDraws += 1;
+      }
+
+      if (homeTeamGoals < awayTeamGoals) totalVictories += 1;
+      else if (homeTeamGoals > awayTeamGoals) totalLosses += 1;
       else totalDraws += 1;
     });
 
@@ -56,14 +68,3 @@ export default class LeaderboardHelper {
     return Number(((totalPoints / (totalGames * 3)) * 100).toFixed(2));
   };
 }
-
-//   name: string,
-//   totalPoints: number,
-//   totalGames: number,
-//   totalVictories: number,
-//   totalDraws: number,
-//   totalLosses: number,
-//   goalsFavor: number,
-//   goalsOwn: number,
-//   goalsBalance: number,
-//   efficiency: number

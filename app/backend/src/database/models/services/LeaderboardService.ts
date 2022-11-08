@@ -11,13 +11,15 @@ export default class LeaderboardService {
     private teamsRepository = new TeamsRepository(),
   ) {}
 
-  getHomeTeamsInfo = async ():Promise<ILeaderboard[]> => {
+  getTeamsInfo = async (inHome: boolean): Promise<ILeaderboard[]> => {
     const allTeams = await this.teamsRepository.getAll();
-    const allMatches = await this.matchesRepository.getAllInProgress('false');
+    const allMatches = await this.matchesRepository.getAllFinished();
 
-    const leaderboard = allTeams.map((team:ITeam) => {
-      const filteredMatches = allMatches.filter((match:IMatch) => match.homeTeam === team.id);
-      return LeaderboardHelper.generateLeaderboard(team, filteredMatches);
+    const leaderboard = allTeams.map((team: ITeam) => {
+      const filteredMatches = allMatches.filter((match: IMatch) =>
+        (inHome ? match.homeTeam === team.id : match.awayTeam === team.id));
+
+      return LeaderboardHelper.generateLeaderboard(team, filteredMatches, inHome);
     });
     return leaderboard;
   };
