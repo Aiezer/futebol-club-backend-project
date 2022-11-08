@@ -1,14 +1,24 @@
 import ILeaderboard from '../database/models/entities/interfaces/ILeaderboard';
 import ITeam from '../database/models/entities/interfaces/ITeam';
-import { IGoals, IMatch, IMatchResults } from '../database/models/entities/interfaces/IMatch';
+import {
+  IGoals,
+  IMatch,
+  IMatchResults,
+} from '../database/models/entities/interfaces/IMatch';
 
 export default class LeaderboardHelper {
   static generateLeaderboard = (team: ITeam, matches: IMatch[], inHome: boolean): ILeaderboard => {
     const { teamName } = team;
     const allGoals: IGoals = this.getGoals(matches, inHome);
-    const matchResults: IMatchResults = this.getFinalMatchResults(matches, inHome);
+    const matchResults: IMatchResults = this.getFinalMatchResults(
+      matches,
+      inHome,
+    );
     const totalPoints: number = this.handleTotalPoints(matchResults);
-    const efficiency: number = this.handleTeamEfficiency(totalPoints, matchResults);
+    const efficiency: number = this.handleTeamEfficiency(
+      totalPoints,
+      matchResults,
+    );
     return {
       name: teamName,
       ...allGoals,
@@ -18,9 +28,20 @@ export default class LeaderboardHelper {
     };
   };
 
+  public static filterTeams = (
+    allTeams: ITeam[],
+    allMatches: IMatch[],
+    inHome: boolean,
+  ): ITeam[] =>
+    allTeams.filter((team: ITeam) => {
+      const filteredMatches = allMatches.filter((match: IMatch) =>
+        (inHome ? match.homeTeam === team.id : match.awayTeam === team.id));
+      return filteredMatches.length > 0 && team;
+    });
+
   private static getGoals = (matches: IMatch[], inHome: boolean): IGoals => {
-    const homeTeamGoals = matches.map((match:IMatch) => match.homeTeamGoals);
-    const awayTeamGoals = matches.map((match:IMatch) => match.awayTeamGoals);
+    const homeTeamGoals = matches.map((match: IMatch) => match.homeTeamGoals);
+    const awayTeamGoals = matches.map((match: IMatch) => match.awayTeamGoals);
     const goalsFavor = inHome
       ? homeTeamGoals.reduce((acc: number, goals: number) => acc + goals)
       : awayTeamGoals.reduce((acc: number, goals: number) => acc + goals);
@@ -55,7 +76,7 @@ export default class LeaderboardHelper {
     return { totalVictories, totalLosses, totalDraws, totalGames };
   };
 
-  private static handleTotalPoints = (matchResults:IMatchResults): number => {
+  private static handleTotalPoints = (matchResults: IMatchResults): number => {
     const { totalVictories, totalDraws } = matchResults;
     return totalVictories * 3 + totalDraws * 1;
   };
