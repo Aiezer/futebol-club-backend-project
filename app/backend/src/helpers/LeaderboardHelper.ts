@@ -1,3 +1,4 @@
+import Matches from '../database/models/entities/Matches';
 import ILeaderboard from '../database/models/entities/interfaces/ILeaderboard';
 import ITeam from '../database/models/entities/interfaces/ITeam';
 import {
@@ -7,8 +8,7 @@ import {
 } from '../database/models/entities/interfaces/IMatch';
 
 export default class LeaderboardHelper {
-  static generateLeaderboard = (team: ITeam, matches: IMatch[], inHome: boolean): ILeaderboard => {
-    const { teamName } = team;
+  static generateLeaderboard = (teamName: string, matches: IMatch[], inHome: boolean) => {
     const allGoals: IGoals = this.getGoals(matches, inHome);
     const matchResults: IMatchResults = this.getFinalMatchResults(
       matches,
@@ -28,13 +28,60 @@ export default class LeaderboardHelper {
     };
   };
 
+  public static generalLeaderboard = (
+    teamName: string,
+    inHomeMatches: IMatch[],
+    inAwayMatches: IMatch[],
+  ) => {
+    const inHomeResults = this.generateLeaderboard(teamName, inHomeMatches, true);
+    const inAwayResults = this.generateLeaderboard(teamName, inAwayMatches, false);
+    const generalLeaderboard = this.merge(teamName, inHomeResults, inAwayResults);
+    return generalLeaderboard;
+  };
+
+  private static merge = (teamName: string, inHome:ILeaderboard, inAway:ILeaderboard) => {
+    const totalVictories = inHome.totalVictories + inAway.totalVictories;
+    const totalDraws = inHome.totalDraws + inAway.totalDraws;
+    const totalGames = inHome.totalGames + inAway.totalGames;
+    const totalPoints = totalVictories * 3 + totalDraws * 1;
+    const efficiency = Number(((totalPoints / (totalGames * 3)) * 100).toFixed(2));
+    return {
+      name: teamName,
+      goalsFavor: inHome.goalsFavor + inAway.goalsFavor,
+      goalsOwn: inHome.goalsOwn + inAway.goalsOwn,
+      goalsBalance: inHome.goalsBalance + inAway.goalsBalance,
+      totalVictories,
+      totalLosses: inHome.totalLosses + inAway.totalLosses,
+      totalDraws,
+      totalGames,
+      totalPoints,
+      efficiency,
+    };
+  };
+
+  static sortTeamStats(allMatches: ILeaderboard[]): ILeaderboard[] {
+    return allMatches.sort((a: ILeaderboard, b: ILeaderboard) => {
+      if (a.totalPoints < b.totalPoints) { return 1; }
+      if (a.totalPoints > b.totalPoints) { return -1; }
+      if (a.totalVictories < b.totalVictories) { return 1; }
+      if (a.totalVictories > b.totalVictories) { return -1; }
+      if (a.goalsBalance < b.goalsBalance) { return 1; }
+      if (a.goalsBalance > b.goalsBalance) { return -1; }
+      if (a.goalsFavor < b.goalsFavor) { return 1; }
+      if (a.goalsFavor > b.goalsFavor) { return -1; }
+      if (a.goalsOwn < b.goalsOwn) { return 1; }
+      if (a.goalsOwn > b.goalsOwn) { return -1; }
+      return 0;
+    });
+  }
+
   public static filterTeams = (
     allTeams: ITeam[],
-    allMatches: IMatch[],
+    allMatches: Matches[],
     inHome: boolean,
   ): ITeam[] =>
     allTeams.filter((team: ITeam) => {
-      const filteredMatches = allMatches.filter((match: IMatch) =>
+      const filteredMatches = allMatches.filter((match: Matches) =>
         (inHome ? match.homeTeam === team.id : match.awayTeam === team.id));
       return filteredMatches.length > 0 && team;
     });
