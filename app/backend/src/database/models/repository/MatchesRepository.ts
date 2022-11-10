@@ -1,3 +1,4 @@
+import { Op } from 'sequelize';
 import { IMatch, IMatchUp } from '../entities/interfaces/IMatch';
 import Matches from '../entities/Matches';
 import Teams from '../entities/Teams';
@@ -56,5 +57,19 @@ export default class MatchesRepository {
       where: { inProgress: 'false' },
     });
     return matches;
+  };
+
+  getAllMatchesByTeamId = async (id: number, inHome: boolean): Promise<IMatch[]> => {
+    const whereQuery = inHome ? { homeTeam: id } : { awayTeam: id };
+    const allTeamMatches = await Matches.findAll({
+      include: [
+        { model: Teams, as: 'teamHome', attributes: ['teamName'] },
+        { model: Teams, as: 'teamAway', attributes: ['teamName'] },
+      ],
+      attributes: { exclude: ['id', 'inProgress', 'homeTeam', 'awayTeam'] },
+      where: { inProgress: false, [Op.or]: [whereQuery] },
+    });
+
+    return allTeamMatches as IMatch[];
   };
 }
