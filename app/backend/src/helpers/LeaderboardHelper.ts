@@ -113,9 +113,7 @@ export default class LeaderboardHelper {
         if (homeTeamGoals > awayTeamGoals) totalVictories += 1;
         else if (homeTeamGoals < awayTeamGoals) totalLosses += 1;
         else totalDraws += 1;
-      }
-
-      if (homeTeamGoals < awayTeamGoals) totalVictories += 1;
+      } else if (homeTeamGoals < awayTeamGoals) totalVictories += 1;
       else if (homeTeamGoals > awayTeamGoals) totalLosses += 1;
       else totalDraws += 1;
     });
