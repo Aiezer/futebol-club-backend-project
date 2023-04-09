@@ -343,7 +343,7 @@ module.exports = {
       {},
     );
   },
-
+//
   down: async (queryInterface) => {
     await queryInterface.bulkDelete('matches', null, {});
   },
